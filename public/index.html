@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula Proxy</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Nebula</h1>
+            <p class="subtitle">Secure. Fast. Unrestricted.</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="urlInput" class="search-input" placeholder="Type a URL or search..."
+                autocomplete="off">
+        </div>
+
+        <div class="app-grid">
+            <!-- App Card: Google -->
+            <a href="/proxy/https://www.google.com" class="app-card">
+                <div class="app-icon">🔍</div>
+                <span class="app-name">Google</span>
+            </a>
+
+            <!-- App Card: Wikipedia -->
+            <a href="/proxy/https://www.wikipedia.org" class="app-card">
+                <div class="app-icon">📚</div>
+                <span class="app-name">Wikipedia</span>
+            </a>
+
+            <!-- App Card: Reddit -->
+            <a href="/proxy/https://www.reddit.com" class="app-card">
+                <div class="app-icon">👽</div>
+                <span class="app-name">Reddit</span>
+            </a>
+
+            <!-- App Card: DuckDuckGo -->
+            <a href="/proxy/https://duckduckgo.com" class="app-card">
+                <div class="app-icon">🦆</div>
+                <span class="app-name">DuckDuckGo</span>
+            </a>
+
+            <!-- App Card: Bing -->
+            <a href="/proxy/https://www.bing.com" class="app-card">
+                <div class="app-icon">🤖</div>
+                <span class="app-name">Bing</span>
+            </a>
+
+            <!-- App Card: HackerNews -->
+            <a href="/proxy/https://news.ycombinator.com" class="app-card">
+                <div class="app-icon">💻</div>
+                <span class="app-name">HackerNews</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('urlInput');
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                let url = input.value.trim();
+
+                if (!url) return;
+
+                // Smart URL detection
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    if (url.includes('.')) {
+                        url = 'https://' + url;
+                    } else {
+                        // Default to search if it looks like a query
+                        url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+                    }
+                }
+
+                // Redirect to proxy
+                window.location.href = '/proxy/' + url;
+            }
+        });
+    </script>
+</body>
+
+</html>
