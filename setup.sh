@@ -15,37 +15,52 @@ sudo apt-get install -y nodejs
 echo "📦 Installing Nginx..."
 sudo apt-get install -y nginx
 
-# 4. Install Git (usually installed, just making sure)
+# 4. Install Git
 sudo apt-get install -y git
 
-# 5. Project Setup (Assuming code is uploaded to ~/proxy-portal)
-# User needs to upload files first or git clone. 
-# We'll assume the directory exists or user is running this script inside it.
-
-echo "📂 Installing Project Dependencies..."
-# Ensure we are in the right directory, if running from inside the project
-if [ -f "package.json" ]; then
-    npm install
+# 5. Clone Repository
+echo "⬇️ Cloning repository..."
+if [ -d "gp-proxy" ]; then
+    echo "⚠️ Directory gp-proxy already exists. Pulling latest changes..."
+    cd gp-proxy
+    git pull
 else
-    echo "⚠️ package.json not found in current directory. Please run this script inside the project folder."
+    git clone https://github.com/gpsite/gp-proxy.git
+    cd gp-proxy
 fi
 
-# 6. Configure Nginx
+# 6. Install Dependencies
+echo "📂 Installing Project Dependencies..."
+npm install
+
+# 7. Configure Nginx
 echo "🔧 Configuring Nginx..."
-# Create a temp config file based on our local nginx.conf
-# Note: In a real scenario, we'd copy the nginx.conf from the repo to /etc/nginx/sites-available
-# Since we have the file locally in the project:
 if [ -f "nginx.conf" ]; then
+    # Backup default config if it exists
+    if [ -f "/etc/nginx/sites-available/default" ]; then
+        sudo mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.backup
+    fi
+    
     sudo cp nginx.conf /etc/nginx/sites-available/default
+    
+    # Test configuration
+    sudo nginx -t
+    
+    # Reload Nginx
     sudo service nginx restart
     echo "✅ Nginx Configured."
 else
-    echo "⚠️ nginx.conf not found. Skipping Nginx config update."
+    echo "⚠️ nginx.conf not found in repository. Skipping Nginx config update."
 fi
 
-# 7. Start App with PM2 (Process Manager)
+# 8. Start App with PM2
 echo "🚀 Starting Application..."
 sudo npm install -g pm2
+# Stop existing instance if running
+pm2 stop proxy-portal 2>/dev/null || true
+pm2 delete proxy-portal 2>/dev/null || true
+
+# Start new instance
 pm2 start server.js --name "proxy-portal"
 pm2 save
 pm2 startup | tail -n 1 | sudo bash

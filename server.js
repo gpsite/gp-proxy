@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const Unblocker = require('unblocker');
 const path = require('path');
 const app = express();
@@ -8,6 +9,13 @@ const app = express();
 const unblocker = new Unblocker({
     prefix: '/proxy/'
 });
+
+// Use CORS middleware to allow requests from any origin
+app.use(cors({
+    origin: '*', // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 
 // Use the unblocker middleware
 // It intercepts requests starting with /proxy/ and handles them
