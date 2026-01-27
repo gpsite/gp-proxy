@@ -9,6 +9,11 @@ const app = express();
 // ============================================
 const AD_DOMAINS = [
     'dtscout.com',
+    'adsco.re',           // User-discovered ad domain
+    'c.adsco.re',         // User-discovered ad domain
+    'cdn4ads.com',        // User-discovered ad domain
+    'adexchangeclear.com',
+    'go.playlg.com',
     'doubleclick.net',
     'googleadservices.com',
     'googlesyndication.com',
